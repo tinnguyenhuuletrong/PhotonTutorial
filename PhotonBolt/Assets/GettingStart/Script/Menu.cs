@@ -3,14 +3,18 @@ using System.Collections;
 
 public class Menu : Bolt.GlobalEventListener
 {
+    string Endpoint;
     void OnGUI()
     {
-        GUILayout.BeginArea(new Rect(10, 10, Screen.width - 20, Screen.height - 20));
+        //Update EndPoint
+        Endpoint = GUI.TextField(new Rect(0, 0, Screen.width, 50), "127.0.0.1:27000");
+
+        GUILayout.BeginArea(new Rect(10, 60, Screen.width - 20, Screen.height - 20));
 
         if (GUILayout.Button("Start Server", GUILayout.ExpandWidth(true), GUILayout.ExpandHeight(true)))
         {
             // START SERVER
-            BoltLauncher.StartServer(UdpKit.UdpEndPoint.Parse("127.0.0.1:27000"));
+            BoltLauncher.StartServer(UdpKit.UdpEndPoint.Parse(Endpoint));
         }
 
         if (GUILayout.Button("Start Client", GUILayout.ExpandWidth(true), GUILayout.ExpandHeight(true)))
@@ -26,7 +30,8 @@ public class Menu : Bolt.GlobalEventListener
     {
         if (BoltNetwork.isServer)
             BoltNetwork.LoadScene("Tutorial1");
-        else BoltNetwork.Connect(UdpKit.UdpEndPoint.Parse("127.0.0.1:27000"));
+        else
+            BoltNetwork.Connect(UdpKit.UdpEndPoint.Parse(Endpoint));
 
     }
 }
