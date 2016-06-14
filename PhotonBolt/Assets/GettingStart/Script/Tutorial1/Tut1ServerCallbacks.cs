@@ -2,8 +2,7 @@
 using System.Collections;
 using UdpKit;
 
-[BoltGlobalBehaviour(BoltNetworkModes.Host)]
-public class ServerCallbacks : Bolt.GlobalEventListener
+public class Tut1ServerCallbacks : Bolt.GlobalEventListener
 {
     public override void Connected(BoltConnection connection)
     {

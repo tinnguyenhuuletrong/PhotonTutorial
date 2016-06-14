@@ -2,8 +2,8 @@
 using System.Collections;
 using System.Collections.Generic;
 
-[BoltGlobalBehaviour]
-public class NetworkCallbacks : Bolt.GlobalEventListener
+
+public class Tut1NetworkCallback : Bolt.GlobalEventListener
 {
     public override void SceneLoadLocalDone(string map)
     {
@@ -12,6 +12,11 @@ public class NetworkCallbacks : Bolt.GlobalEventListener
 
         // instantiate cube
         BoltNetwork.Instantiate(BoltPrefabs.Cube, pos, Quaternion.identity);
+
+        if(BoltNetwork.isServer)
+        {
+            this.gameObject.AddComponent<Tut1ServerCallbacks>();
+        }
     }
 
 

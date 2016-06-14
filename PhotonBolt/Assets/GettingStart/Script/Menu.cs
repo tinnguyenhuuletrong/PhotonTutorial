@@ -4,12 +4,15 @@ using System.Collections;
 public class Menu : Bolt.GlobalEventListener
 {
     string Endpoint;
+    string Scene;
     void OnGUI()
     {
         //Update EndPoint
         Endpoint = GUI.TextField(new Rect(0, 0, Screen.width, 50), "127.0.0.1:27000");
 
-        GUILayout.BeginArea(new Rect(10, 60, Screen.width - 20, Screen.height - 20));
+        Scene = GUI.TextField(new Rect(0, 60, Screen.width, 50), "Tutorial1");
+
+        GUILayout.BeginArea(new Rect(10, 130, Screen.width - 20, Screen.height - 20));
 
         if (GUILayout.Button("Start Server", GUILayout.ExpandWidth(true), GUILayout.ExpandHeight(true)))
         {
@@ -29,7 +32,7 @@ public class Menu : Bolt.GlobalEventListener
     public override void BoltStartDone()
     {
         if (BoltNetwork.isServer)
-            BoltNetwork.LoadScene("Tutorial1");
+            BoltNetwork.LoadScene(Scene);
         else
             BoltNetwork.Connect(UdpKit.UdpEndPoint.Parse(Endpoint));
 
