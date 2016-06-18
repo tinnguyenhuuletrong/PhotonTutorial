@@ -47,8 +47,8 @@ GameObject:
   - 33: {fileID: 3375318}
   - 65: {fileID: 6533370}
   - 23: {fileID: 2388434}
-  - 114: {fileID: 11485694}
   - 114: {fileID: 11478172}
+  - 114: {fileID: 11451274}
   m_Layer: 0
   m_Name: Cube
   m_TagString: Untagged
@@ -205,21 +205,7 @@ BoxCollider:
   serializedVersion: 2
   m_Size: {x: 1, y: 1, z: 1}
   m_Center: {x: 0, y: 0, z: 0}
---- !u!114 &11478172
-MonoBehaviour:
-  m_ObjectHideFlags: 1
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 100100000}
-  m_GameObject: {fileID: 144338}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 28912a88bde9f6846878b830bd0be0af, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  Weapons:
-  - {fileID: 139320}
-  - {fileID: 119218}
---- !u!114 &11485694
+--- !u!114 &11451274
 MonoBehaviour:
   m_ObjectHideFlags: 1
   m_PrefabParentObject: {fileID: 0}
@@ -244,6 +230,20 @@ MonoBehaviour:
   _detachOnDisable: 1
   _allowFirstReplicationWhenFrozen: 0
   _autoRemoveChildEntities: 0
+--- !u!114 &11478172
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 144338}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 28912a88bde9f6846878b830bd0be0af, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  Weapons:
+  - {fileID: 139320}
+  - {fileID: 119218}
 --- !u!135 &13599316
 SphereCollider:
   m_ObjectHideFlags: 1
