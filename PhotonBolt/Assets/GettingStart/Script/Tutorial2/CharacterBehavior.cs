@@ -2,6 +2,7 @@
 using System.Collections;
 using UnityStandardAssets.Characters.ThirdPerson;
 using UnityStandardAssets.CrossPlatformInput;
+using UnityStandardAssets.Cameras;
 
 public class CharacterBehavior : Bolt.EntityBehaviour<ICharacter>
 {
@@ -24,7 +25,18 @@ public class CharacterBehavior : Bolt.EntityBehaviour<ICharacter>
             m_Character.enabled = false;
             state.Animator.applyRootMotion = false;
         }
-            
+
+        if(isControl())
+        {
+            FreeLookCam lookCam = GameObject.Find("FreeLookCameraRig").GetComponent<FreeLookCam>();
+            lookCam.SetTarget(transform);
+            m_Cam = Camera.main.transform;
+        }
+    }
+
+    public bool isControl()
+    {
+        return entity.isOwner;
     }
 
     private void Update()

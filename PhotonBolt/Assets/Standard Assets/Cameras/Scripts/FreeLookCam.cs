@@ -72,6 +72,11 @@ namespace UnityStandardAssets.Cameras
 			if(Time.timeScale < float.Epsilon)
 			return;
 
+#if UNITY_EDITOR || UNITY_STANDALONE_WIN
+            if (!Input.GetMouseButton(0))
+                return;
+#endif
+
             // Read the user input
             var x = CrossPlatformInputManager.GetAxis("Mouse X");
             var y = CrossPlatformInputManager.GetAxis("Mouse Y");
