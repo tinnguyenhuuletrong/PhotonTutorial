@@ -19,24 +19,28 @@ public class CharacterBehavior : Bolt.EntityBehaviour<ICharacter>
         
         // get the third person character ( this should never be null due to require component )
         m_Character = GetComponent<ThirdPersonCharacter>();
+        
+        m_Cam = Camera.main.transform;
 
-        if (!entity.isOwner)
-        {
-            m_Character.enabled = false;
-            state.Animator.applyRootMotion = false;
-        }
+        m_Character.enabled = false;
+        state.Animator.applyRootMotion = false;
 
-        if(isControl())
-        {
-            FreeLookCam lookCam = GameObject.Find("FreeLookCameraRig").GetComponent<FreeLookCam>();
-            lookCam.SetTarget(transform);
-            m_Cam = Camera.main.transform;
-        }
     }
 
-    public bool isControl()
+    public override void ControlGained()
     {
-        return entity.isOwner;
+        m_Character.enabled = true;
+        state.Animator.applyRootMotion = true;
+
+        base.ControlGained();
+    }
+
+    public override void ControlLost()
+    {
+        m_Character.enabled = false;
+        state.Animator.applyRootMotion = false;
+
+        base.ControlLost();
     }
 
     private void Update()
