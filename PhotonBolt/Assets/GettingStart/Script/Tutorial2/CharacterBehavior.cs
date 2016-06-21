@@ -3,27 +3,41 @@ using System.Collections;
 using UnityStandardAssets.Characters.ThirdPerson;
 using UnityStandardAssets.CrossPlatformInput;
 using UnityStandardAssets.Cameras;
+using Bolt;
 
 public class CharacterBehavior : Bolt.EntityBehaviour<ICharacter>
 {
     private ThirdPersonCharacter m_Character; // A reference to the ThirdPersonCharacter on the object
+    private Rigidbody m_Rigidbody;
+    Animator m_Animator;
+
     private Transform m_Cam;                  // A reference to the main camera in the scenes transform
     private Vector3 m_CamForward;             // The current forward direction of the camera
     private Vector3 m_Move;
+
     private bool m_Jump;                      // the world-relative desired move direction, calculated from the camForward and user input.
+    private float m_Horizontal;
+    private float m_Vertical;
+    private bool m_Crouch;
+    private bool m_Walk;
 
     public override void Attached()
     {
         state.SetTransforms(state.Transform, transform);
         state.SetAnimator(GetComponent<Animator>());
-        
+
         // get the third person character ( this should never be null due to require component )
         m_Character = GetComponent<ThirdPersonCharacter>();
-        
+        m_Rigidbody = GetComponent<Rigidbody>();
+        m_Animator = GetComponent<Animator>();
         m_Cam = Camera.main.transform;
 
-        m_Character.enabled = false;
-        state.Animator.applyRootMotion = false;
+        //Disable Component for Guest object
+        if(!entity.isControllerOrOwner)
+        {
+            m_Character.enabled = false;
+            state.Animator.applyRootMotion = false;
+        }
 
     }
 
@@ -45,18 +59,73 @@ public class CharacterBehavior : Bolt.EntityBehaviour<ICharacter>
 
     private void Update()
     {
+        UpdateInput();
+    }
+
+    /// <summary>
+    /// Update Loop for Controller Mode
+    ///     Generate and Send Input Command to Owner
+    /// </summary>
+    public override void SimulateController()
+    {
+        GenerateInputCommand();
+
+        base.SimulateController();
+    }
+
+    /// <summary>
+    /// Execute Command
+    ///     Called on Owner for authorize and Controller for predictable
+    /// </summary>
+    /// <param name="command"></param>
+    /// <param name="resetState"></param>
+    public override void ExecuteCommand(Command command, bool resetState)
+    {
+        CharacterCmd cmd = command as CharacterCmd;
+
+        if (resetState)
+        {
+            transform.rotation = cmd.Result.Rotation;
+            transform.position = cmd.Result.Position;
+        }
+        else
+        {
+            m_Character.Move(cmd.Input.Move, cmd.Input.Crouch, cmd.Input.Jump);
+
+            //Update cmd Result
+            cmd.Result.Rotation = transform.rotation;
+            cmd.Result.Position = transform.position;
+            cmd.Result.Velocity = m_Rigidbody.velocity;
+        }
+
+        base.ExecuteCommand(command, resetState);
+    }
+
+    /// <summary>
+    /// Update Input Key
+    /// </summary>
+    private void UpdateInput()
+    {
         if (!m_Jump)
         {
             m_Jump = CrossPlatformInputManager.GetButtonDown("Jump");
         }
+
+        m_Horizontal = CrossPlatformInputManager.GetAxis("Horizontal");
+        m_Vertical = CrossPlatformInputManager.GetAxis("Vertical");
+        m_Crouch = Input.GetKey(KeyCode.C);
+        m_Walk = Input.GetKey(KeyCode.LeftShift);
     }
 
-    public override void SimulateOwner()
+    /// <summary>
+    /// Generate Input Command from Controller
+    /// </summary>
+    private void GenerateInputCommand()
     {
         // read inputs
-        float h = CrossPlatformInputManager.GetAxis("Horizontal");
-        float v = CrossPlatformInputManager.GetAxis("Vertical");
-        bool crouch = Input.GetKey(KeyCode.C);
+        float h = m_Horizontal;
+        float v = m_Vertical;
+        bool crouch = m_Crouch;
 
         // calculate move direction to pass to character
         if (m_Cam != null)
@@ -72,11 +141,17 @@ public class CharacterBehavior : Bolt.EntityBehaviour<ICharacter>
         }
 #if !MOBILE_INPUT
         // walk speed multiplier
-        if (Input.GetKey(KeyCode.LeftShift)) m_Move *= 0.5f;
+        if (m_Walk) m_Move *= 0.5f;
 #endif
 
-        // pass all parameters to the character control script
-        m_Character.Move(m_Move, crouch, m_Jump);
+        ICharacterCmdInput input = CharacterCmd.Create();
+
+        input.Move = m_Move;
+        input.Jump = m_Jump;
+        input.Crouch = crouch;
+
+        entity.QueueInput(input);
+
         m_Jump = false;
     }
 }
