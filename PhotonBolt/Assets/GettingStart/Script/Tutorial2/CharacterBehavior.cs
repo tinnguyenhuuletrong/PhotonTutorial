@@ -7,7 +7,7 @@ using Bolt;
 
 public class CharacterBehavior : Bolt.EntityBehaviour<ICharacter>
 {
-    private ThirdPersonCharacter m_Character; // A reference to the ThirdPersonCharacter on the object
+    private TutorialCharacterController m_Character; // A reference to the ThirdPersonCharacter on the object
     private Rigidbody m_Rigidbody;
     Animator m_Animator;
 
@@ -27,7 +27,7 @@ public class CharacterBehavior : Bolt.EntityBehaviour<ICharacter>
         state.SetAnimator(GetComponent<Animator>());
 
         // get the third person character ( this should never be null due to require component )
-        m_Character = GetComponent<ThirdPersonCharacter>();
+        m_Character = GetComponent<TutorialCharacterController>();
         m_Rigidbody = GetComponent<Rigidbody>();
         m_Animator = GetComponent<Animator>();
         m_Cam = Camera.main.transform;
@@ -36,7 +36,6 @@ public class CharacterBehavior : Bolt.EntityBehaviour<ICharacter>
         if(!entity.isControllerOrOwner)
         {
             m_Character.enabled = false;
-            state.Animator.applyRootMotion = false;
         }
 
     }
@@ -44,7 +43,6 @@ public class CharacterBehavior : Bolt.EntityBehaviour<ICharacter>
     public override void ControlGained()
     {
         m_Character.enabled = true;
-        state.Animator.applyRootMotion = true;
 
         base.ControlGained();
     }
@@ -52,7 +50,6 @@ public class CharacterBehavior : Bolt.EntityBehaviour<ICharacter>
     public override void ControlLost()
     {
         m_Character.enabled = false;
-        state.Animator.applyRootMotion = false;
 
         base.ControlLost();
     }
@@ -87,18 +84,42 @@ public class CharacterBehavior : Bolt.EntityBehaviour<ICharacter>
         {
             transform.rotation = cmd.Result.Rotation;
             transform.position = cmd.Result.Position;
+            m_Rigidbody.velocity = cmd.Result.Velocity;
         }
         else
         {
-            m_Character.Move(cmd.Input.Move, cmd.Input.Crouch, cmd.Input.Jump);
+            //m_Character.Move(cmd.Input.Move, cmd.Input.Crouch, cmd.Input.Jump);
+            m_Character.Move(cmd.Input.Move, cmd.Input.Jump);
 
             //Update cmd Result
             cmd.Result.Rotation = transform.rotation;
             cmd.Result.Position = transform.position;
             cmd.Result.Velocity = m_Rigidbody.velocity;
+
+            if (cmd.IsFirstExecution)
+            {
+                AnimatePlayer(cmd);
+            }
         }
 
         base.ExecuteCommand(command, resetState);
+    }
+
+    //Animating player
+    private void AnimatePlayer(CharacterCmd cmd)
+    {
+        // FWD <> BWD movement
+        Vector3 relativeMove = transform.InverseTransformDirection(cmd.Input.Move);
+        m_Animator.SetFloat("Forward", relativeMove.z, 0.1f, Time.deltaTime);
+
+        float m_TurnAmount = Mathf.Atan2(relativeMove.x, relativeMove.z);
+        m_Animator.SetFloat("Turn", m_TurnAmount, 0.1f, Time.deltaTime);
+
+        //// JUMP
+        //if (_motor.jumpStartedThisFrame)
+        //{
+        //    state.Jump();
+        //}
     }
 
     /// <summary>

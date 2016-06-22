@@ -115,8 +115,8 @@ GameObject:
   - 4: {fileID: 416882}
   - 95: {fileID: 9518754}
   - 54: {fileID: 5458920}
-  - 136: {fileID: 13637724}
-  - 114: {fileID: 11425234}
+  - 143: {fileID: 14362762}
+  - 114: {fileID: 11482638}
   - 114: {fileID: 11413662}
   - 114: {fileID: 11410356}
   m_Layer: 0
@@ -2369,8 +2369,8 @@ Rigidbody:
   m_Mass: 1
   m_Drag: 0
   m_AngularDrag: 0.05
-  m_UseGravity: 1
-  m_IsKinematic: 0
+  m_UseGravity: 0
+  m_IsKinematic: 1
   m_Interpolate: 0
   m_Constraints: 0
   m_CollisionDetection: 0
@@ -2386,7 +2386,7 @@ Animator:
   m_Controller: {fileID: 9100000, guid: e2cf68ff4b1ffda45a77f7307dd789b9, type: 2}
   m_CullingMode: 1
   m_UpdateMode: 0
-  m_ApplyRootMotion: 1
+  m_ApplyRootMotion: 0
   m_LinearVelocityBlending: 0
   m_WarningMessage: 
   m_HasTransformHierarchy: 1
@@ -2402,7 +2402,7 @@ MonoBehaviour:
   m_Script: {fileID: -36112512, guid: 5b00bf8b25851d440940a40ec23344f4, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _sceneGuid: 
+  _sceneGuid: 19680e70-1053-4f1f-ab0d-08958b6c1004
   _serializerGuid: 9382f4fc-4036-457f-b8b5-0a44dbdd879c
   _prefabId: 1
   _updateRate: 1
@@ -2415,7 +2415,7 @@ MonoBehaviour:
   _alwaysProxy: 0
   _detachOnDisable: 1
   _allowFirstReplicationWhenFrozen: 0
-  _autoRemoveChildEntities: 0
+  _autoRemoveChildEntities: 1
 --- !u!114 &11413662
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -2427,7 +2427,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 76663839f5b7fba4cb6812ff15d1c092, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
---- !u!114 &11425234
+--- !u!114 &11482638
 MonoBehaviour:
   m_ObjectHideFlags: 1
   m_PrefabParentObject: {fileID: 0}
@@ -2435,32 +2435,19 @@ MonoBehaviour:
   m_GameObject: {fileID: 109414}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: ce7a80d520cacc042b5fe14f373d8173, type: 3}
+  m_Script: {fileID: 11500000, guid: 793a280ae52c53e49b3e2f487c184dd3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_MovingTurnSpeed: 360
-  m_StationaryTurnSpeed: 180
-  m_JumpPower: 10
-  m_GravityMultiplier: 2
-  m_RunCycleLegOffset: 0.2
-  m_MoveSpeedMultiplier: 1
-  m_AnimSpeedMultiplier: 1
-  m_GroundCheckDistance: 0.3
-  m_TurnAmount: 0
-  m_ForwardAmount: 0
---- !u!136 &13637724
-CapsuleCollider:
-  m_ObjectHideFlags: 1
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 100100000}
-  m_GameObject: {fileID: 109414}
-  m_Material: {fileID: 0}
-  m_IsTrigger: 0
-  m_Enabled: 1
-  m_Radius: 0.3
-  m_Height: 1.6
-  m_Direction: 1
-  m_Center: {x: 0, y: 0.8, z: 0}
+  skinWidth: 0.08
+  gravityForce: -9.81
+  jumpForce: 40
+  jumpTotalFrames: 30
+  movingSpeed: 4
+  maxVelocity: 32
+  drag: {x: 1, y: 0, z: 1}
+  layerMask:
+    serializedVersion: 2
+    m_Bits: 0
 --- !u!137 &13712300
 SkinnedMeshRenderer:
   m_ObjectHideFlags: 1
@@ -2617,6 +2604,23 @@ SkinnedMeshRenderer:
     m_Center: {x: 0.0009998977, y: 0.007603839, z: 0.00028842688}
     m_Extent: {x: 0.80239844, y: 0.23826995, z: 0.5723474}
   m_DirtyAABB: 0
+--- !u!143 &14362762
+CharacterController:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 109414}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 0
+  m_Enabled: 1
+  serializedVersion: 2
+  m_Height: 1.6
+  m_Radius: 0.3
+  m_SlopeLimit: 45
+  m_StepOffset: 0.3
+  m_SkinWidth: 0.08
+  m_MinMoveDistance: 0.001
+  m_Center: {x: 0, y: 0.8, z: 0}
 --- !u!1001 &100100000
 Prefab:
   m_ObjectHideFlags: 1
