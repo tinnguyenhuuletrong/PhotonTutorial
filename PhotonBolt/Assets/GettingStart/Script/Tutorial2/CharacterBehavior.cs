@@ -82,23 +82,22 @@ public class CharacterBehavior : Bolt.EntityBehaviour<ICharacter>
 
         if (resetState)
         {
-            transform.rotation = cmd.Result.Rotation;
-            transform.position = cmd.Result.Position;
-            m_Rigidbody.velocity = cmd.Result.Velocity;
+            m_Character.SetState(cmd.Result.Position, cmd.Result.Rotation, cmd.Result.Velocity, cmd.Result.IsGround, cmd.Result.JumpFrame);
         }
         else
         {
-            //m_Character.Move(cmd.Input.Move, cmd.Input.Crouch, cmd.Input.Jump);
-            m_Character.Move(cmd.Input.Move, cmd.Input.Jump);
+            TutorialCharacterController.State outputState = m_Character.Move(cmd.Input.Move, cmd.Input.Jump);
 
             //Update cmd Result
-            cmd.Result.Rotation = transform.rotation;
-            cmd.Result.Position = transform.position;
-            cmd.Result.Velocity = m_Rigidbody.velocity;
+            cmd.Result.Position = outputState.position;
+            cmd.Result.Velocity = outputState.velocity;
+            cmd.Result.Rotation = outputState.rotation;
+            cmd.Result.IsGround = outputState.isGrounded;
+            cmd.Result.JumpFrame = outputState.jumpFrames;
 
             if (cmd.IsFirstExecution)
             {
-                AnimatePlayer(cmd);
+                AnimatePlayer(cmd, outputState);
             }
         }
 
@@ -106,7 +105,7 @@ public class CharacterBehavior : Bolt.EntityBehaviour<ICharacter>
     }
 
     //Animating player
-    private void AnimatePlayer(CharacterCmd cmd)
+    private void AnimatePlayer(CharacterCmd cmd, TutorialCharacterController.State outputState)
     {
         // FWD <> BWD movement
         Vector3 relativeMove = transform.InverseTransformDirection(cmd.Input.Move);
@@ -115,11 +114,17 @@ public class CharacterBehavior : Bolt.EntityBehaviour<ICharacter>
         float m_TurnAmount = Mathf.Atan2(relativeMove.x, relativeMove.z);
         m_Animator.SetFloat("Turn", m_TurnAmount, 0.1f, Time.deltaTime);
 
-        //// JUMP
-        //if (_motor.jumpStartedThisFrame)
-        //{
-        //    state.Jump();
-        //}
+        if(outputState.isGrounded)
+        {
+            m_Animator.SetBool("OnGround", true);
+            m_Animator.SetFloat("Jump", 0);
+        } else
+        {
+            m_Animator.SetBool("OnGround", false);
+            m_Animator.SetFloat("Jump", outputState._jumpProgress);
+        }
+        
+
     }
 
     /// <summary>

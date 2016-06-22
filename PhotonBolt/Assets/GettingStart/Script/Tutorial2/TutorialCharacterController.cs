@@ -9,10 +9,13 @@ class TutorialCharacterController : MonoBehaviour
 {
     public struct State
     {
+        public Quaternion rotation;
         public Vector3 position;
         public Vector3 velocity;
         public bool isGrounded;
         public int jumpFrames;
+
+        public float _jumpProgress;
     }
 
     State _state;
@@ -84,7 +87,7 @@ class TutorialCharacterController : MonoBehaviour
         _state.position = transform.localPosition;
     }
 
-    public void SetState(Vector3 position, Vector3 velocity, bool isGrounded, int jumpFrames)
+    public void SetState(Vector3 position, Quaternion rotation, Vector3 velocity, bool isGrounded, int jumpFrames)
     {
         // assign new state
         _state.position = position;
@@ -94,6 +97,7 @@ class TutorialCharacterController : MonoBehaviour
 
         // assign local position
         transform.localPosition = _state.position;
+        transform.rotation = _state.rotation;
     }
 
     void Move(Vector3 velocity)
@@ -149,7 +153,12 @@ class TutorialCharacterController : MonoBehaviour
             force = (float)_state.jumpFrames / (float)jumpTotalFrames;
             force = jumpForce * force;
 
-            Move(new Vector3(0, force, 0));
+            _state._jumpProgress = force;
+
+            Vector3 vJumpForce = new Vector3(0, force, 0);
+           
+            //Apply Instance Jump Force
+            Move(vJumpForce);
         }
 
         // decrease jump frames
@@ -179,6 +188,9 @@ class TutorialCharacterController : MonoBehaviour
 
         // update position
         _state.position = transform.localPosition;
+
+        // update rotation
+        _state.rotation = transform.rotation;
 
         // done
         return _state;
