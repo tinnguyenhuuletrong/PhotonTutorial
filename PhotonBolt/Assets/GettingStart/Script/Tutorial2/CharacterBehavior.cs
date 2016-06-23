@@ -83,6 +83,8 @@ public class CharacterBehavior : Bolt.EntityBehaviour<ICharacter>
         if (resetState)
         {
             m_Character.SetState(cmd.Result.Position, cmd.Result.Rotation, cmd.Result.Velocity, cmd.Result.IsGround, cmd.Result.JumpFrame);
+
+            AnimatePlayer(cmd, m_Character.CurrentState);
         }
         else
         {
@@ -100,8 +102,6 @@ public class CharacterBehavior : Bolt.EntityBehaviour<ICharacter>
                 AnimatePlayer(cmd, outputState);
             }
         }
-
-        base.ExecuteCommand(command, resetState);
     }
 
     //Animating player

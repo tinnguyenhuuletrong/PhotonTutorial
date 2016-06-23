@@ -9,7 +9,9 @@ class Tutorial2Server : Bolt.GlobalEventListener
 {
     void Awake()
     {
+#if UNITY_EDITOR
         PlayerManager.CreateServerPlayer();
+#endif
     }
 
     public override void Connected(BoltConnection arg)
@@ -19,7 +21,9 @@ class Tutorial2Server : Bolt.GlobalEventListener
 
     public override void SceneLoadLocalDone(string map)
     {
+#if UNITY_EDITOR
         PlayerManager.ServerPlayer.Spawn();
+#endif
     }
 
     public override void SceneLoadRemoteDone(BoltConnection connection)

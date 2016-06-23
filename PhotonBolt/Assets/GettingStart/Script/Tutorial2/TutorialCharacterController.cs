@@ -45,6 +45,11 @@ class TutorialCharacterController : MonoBehaviour
     [SerializeField]
     LayerMask layerMask;
 
+    internal State CurrentState
+    {
+        get { return _state; }
+    }
+
     Vector3 sphere
     {
         get
@@ -84,7 +89,7 @@ class TutorialCharacterController : MonoBehaviour
     {
         _cc = GetComponent<CharacterController>();
         _state = new State();
-        _state.position = transform.localPosition;
+        _state.position = transform.position;
     }
 
     public void SetState(Vector3 position, Quaternion rotation, Vector3 velocity, bool isGrounded, int jumpFrames)
@@ -94,9 +99,11 @@ class TutorialCharacterController : MonoBehaviour
         _state.velocity = velocity;
         _state.jumpFrames = jumpFrames;
         _state.isGrounded = isGrounded;
+        _state.rotation = rotation;
 
         // assign local position
-        transform.localPosition = _state.position;
+        transform.position = _state.position;
+
         transform.rotation = _state.rotation;
     }
 
@@ -114,14 +121,14 @@ class TutorialCharacterController : MonoBehaviour
         }
 
         _state.isGrounded = isGrounded;
-        _state.position = transform.localPosition;
+        _state.position = transform.position;
     }
 
     public State Move(Vector3 move, bool jump)
     {
         var moving = false;
         var movingDir = move;
-        
+       
         if (movingDir.x != 0 || movingDir.z != 0)
         {
             moving = true;
@@ -187,7 +194,7 @@ class TutorialCharacterController : MonoBehaviour
         DetectTunneling();
 
         // update position
-        _state.position = transform.localPosition;
+        _state.position = transform.position;
 
         // update rotation
         _state.rotation = transform.rotation;
