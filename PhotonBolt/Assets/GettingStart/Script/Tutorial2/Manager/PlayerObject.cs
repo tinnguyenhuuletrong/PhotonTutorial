@@ -44,6 +44,14 @@ class PlayerObject
         Entity.transform.position = RandomPosition();
     }
 
+    public void Unspawn()
+    {
+        if (Entity == null)
+            return;
+
+        BoltNetwork.Destroy(Entity.gameObject);
+    }
+
     Vector3 RandomPosition()
     {
         return new Vector3(Random.Range(-16, 16), 4, Random.Range(-16, 16));

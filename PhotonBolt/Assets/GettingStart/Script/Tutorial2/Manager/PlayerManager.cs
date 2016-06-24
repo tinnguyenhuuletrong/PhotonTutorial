@@ -34,6 +34,12 @@ static class PlayerManager
         return p;
     }
 
+    // Remove Player
+    public static void RemovePlayer(PlayerObject obj)
+    {
+        players.Remove(obj);
+    }
+
     // this simply returns the 'players' list cast to
     // an IEnumerable<T> so that we hide the ability
     // to modify the player list from the outside.

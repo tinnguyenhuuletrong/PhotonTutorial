@@ -19,6 +19,14 @@ class Tutorial2Server : Bolt.GlobalEventListener
         PlayerManager.CreateClientPlayer(arg);
     }
 
+    public override void Disconnected(BoltConnection connection)
+    {
+        PlayerObject obj = PlayerManager.FindPlayerFromConnection(connection);
+        obj.Unspawn();
+
+        PlayerManager.RemovePlayer(obj);
+    }
+
     public override void SceneLoadLocalDone(string map)
     {
 #if UNITY_EDITOR
